@@ -1,0 +1,39 @@
+version: '3.1'
+
+services:
+  gcs:
+    image: fsouza/fake-gcs-server
+    # ports:
+    #   - 4443:4443
+    volumes:
+      - "./storage/gcs:/data/croaker"
+    command: -scheme http -public-host ${URL:-localhost}:4443
+  app:
+    build:
+      context: "."
+      args:
+        - UID
+        - GID
+        - USERNAME=croaker
+        - GROUPNAME=croaker
+    tty: true
+    volumes:
+      - ".:/srv"
+    # command: sh -c "npm run dev"
+    environment:
+      TZ: Asia/Tokyo
+      NODE_ENV: develop
+      PORT: 3000
+      SQLITE_FILE: croaker.sqlite3
+      STORAGE_BUCKET: 'croaker'
+      STORAGE_DIRECTORY: '/files'
+      NEXTAUTH_SECRET: "${NEXTAUTH_SECRET}"
+      NEXTAUTH_URL: "http://localhost:3000"
+      GITHUB_ID: "${GITHUB_ID}"
+      GITHUB_SECRET: "${GITHUB_SECRET}"
+      GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID}"
+      GOOGLE_CLIENT_SECRET: "${GOOGLE_CLIENT_SECRET}"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - gcs

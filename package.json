@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "croaker",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -8,7 +8,14 @@
     "dev": "remix vite:dev",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "remix-serve ./build/server/index.js",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "shadcn": "shadcn-ui@latest add",
+    "prettier": "prettier --write 'app/**/*.{ts,tsx}'",
+    "prettier_check": "prettier --check 'app/**/*.{ts,tsx}'",
+    "build:migrater": "tsc app/database/migrate.ts --outDir script -m nodenext",
+    "build:migration": "tsc app/database/migration/*.ts --outDir script/migration -m nodenext",
+    "build:migrate": "npm run build:migrater && npm run build:migration",
+    "migrate": "node script/migrate.js"
   },
   "dependencies": {
     "@remix-run/node": "^2.11.0",
